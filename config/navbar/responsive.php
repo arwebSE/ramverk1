@@ -7,7 +7,7 @@ return [
     "id" => "rm-menu",
     "wrapper" => null,
     "class" => "rm-default rm-mobile",
- 
+
     // Here comes the menu items
     "items" => [
         [
@@ -31,6 +31,20 @@ return [
                         "url" => "redovisning/kmom02",
                         "title" => "Redovisning för kmom02.",
                     ],
+                ],
+            ],
+        ],
+        [
+            "text" => "Development",
+            "url" => "auro",
+            "title" => "Redovisningssidor för kursmoment.",
+            "submenu" => [
+                "items" => [
+                    [
+                        "text" => "IP Validator",
+                        "url" => "auro",
+                        "title" => "IP validation.",
+                    ]
                 ],
             ],
         ],

@@ -6,7 +6,7 @@ return [
     // Use for styling the menu
     "wrapper" => null,
     "class" => "my-navbar rm-default rm-desktop",
- 
+
     // Here comes the menu items
     "items" => [
         [
@@ -30,6 +30,20 @@ return [
                         "url" => "redovisning/kmom02",
                         "title" => "Redovisning för kmom02.",
                     ],
+                ],
+            ],
+        ],
+        [
+            "text" => "Development",
+            "url" => "auro",
+            "title" => "Redovisningssidor för kursmoment.",
+            "submenu" => [
+                "items" => [
+                    [
+                        "text" => "IP Validator",
+                        "url" => "auro",
+                        "title" => "IP validation.",
+                    ]
                 ],
             ],
         ],
