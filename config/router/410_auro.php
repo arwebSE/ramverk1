@@ -6,7 +6,7 @@ return [
     "routes" => [
         [
             "info" => "Auro controller.",
-            "mount" => "auro",
+            "mount" => "dev/auro",
             "handler" => "\Anax\Controller\AuroController",
         ],
     ]

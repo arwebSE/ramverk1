@@ -20,8 +20,13 @@ return [
         ],
         [
             "text" => "Development",
-            "url" => "auro",
+            "url" => "dev/auro",
             "title" => "Redovisningssidor för kursmoment.",
+        ],
+        [
+            "text" => "GeoIP REM",
+            "url" => "dev/rem",
+            "title" => "GeoIP REM server.",
         ],
         [
             "text" => "Om",

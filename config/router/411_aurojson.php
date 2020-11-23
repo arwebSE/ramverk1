@@ -6,7 +6,7 @@ return [
     "routes" => [
         [
             "info" => "Auro JSON API controller.",
-            "mount" => "json",
+            "mount" => "dev/json",
             "handler" => "\Anax\Controller\AuroJsonController",
         ],
     ]

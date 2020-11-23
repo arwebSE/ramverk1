@@ -36,14 +36,19 @@ return [
         ],
         [
             "text" => "Development",
-            "url" => "auro",
+            "url" => "dev",
             "title" => "Redovisningssidor för kursmoment.",
             "submenu" => [
                 "items" => [
                     [
                         "text" => "IP Validator",
-                        "url" => "auro",
+                        "url" => "dev/auro",
                         "title" => "IP validation.",
+                    ],
+                    [
+                        "text" => "GeoIP REM",
+                        "url" => "dev/rem",
+                        "title" => "GeoIP REM server.",
                     ]
                 ],
             ],
