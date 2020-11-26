@@ -8,7 +8,7 @@ Min me-sida i kursen ramverk1
 
 Hej!
 
-Mitt namn är August. Jag är 24 år gammal.
+Mitt namn är August. Jag är 25 år gammal.
 
 Jag är uppvuxen i Södertälje men har bott i Östergötlands Linköping samt Norrköping men är nu den senaste tiden tillbaka i Södertälje tillfälligt.
 
