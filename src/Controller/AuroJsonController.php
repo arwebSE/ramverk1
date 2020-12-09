@@ -27,7 +27,8 @@ class AuroJsonController implements ContainerInjectableInterface
         }
     }
 
-    public function validIP($adress = null) {
+    public function validIP($adress = null)
+    {
         /**
          * A function to validate IP adress from GET request.
          *
@@ -40,7 +41,8 @@ class AuroJsonController implements ContainerInjectableInterface
         }
     }
 
-    public function IPVersion($adress = null) {
+    public function IPVersion($adress = null)
+    {
         /**
          * Returns IP version
          *
@@ -75,6 +77,7 @@ class AuroJsonController implements ContainerInjectableInterface
         $valid = false;
         $version = null;
         $hostname = null;
+        $geo = null;
         $maplink = null;
 
         if ($this->adress) {

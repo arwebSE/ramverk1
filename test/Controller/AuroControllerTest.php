@@ -63,6 +63,16 @@ class AuroControllerTest extends TestCase
     }
 
     /**
+     * Fail test the function validateIP.
+     */
+    public function testValidateIPFail()
+    {
+        $res = $this->controller->validateIP("123");
+        $this->assertContains("not a valid", $res);
+    }
+
+
+    /**
      * Test the route "index".
      */
     public function testIndexAction()

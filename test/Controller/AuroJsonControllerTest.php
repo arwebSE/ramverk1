@@ -48,11 +48,14 @@ class AuroJsonControllerTest extends TestCase
         $this->assertInternalType("array", $res);
 
         $json = $res[0];
+        $json = json_decode($json, true);
 
         $this->assertEquals("8.8.8.8", $json["ip"]);
         $this->assertEquals(true, $json["valid"]);
         $this->assertEquals("IPv4", $json["version"]);
         $this->assertEquals("dns.google", $json["hostname"]);
+        $this->assertEquals("United States", $json["country"]);
+        $this->assertEquals("Mountain View", $json["city"]);
     }
 
     /**
@@ -67,6 +70,7 @@ class AuroJsonControllerTest extends TestCase
         $this->assertInternalType("array", $res);
 
         $json = $res[0];
+        $json = json_decode($json, true);
 
         $this->assertEquals("2001:4860:4860::8888", $json["ip"]);
         $this->assertEquals(true, $json["valid"]);
@@ -86,6 +90,7 @@ class AuroJsonControllerTest extends TestCase
         $this->assertInternalType("array", $res);
 
         $json = $res[0];
+        $json = json_decode($json, true);
 
         $this->assertEquals("123", $json["ip"]);
         $this->assertEquals(false, $json["valid"]);

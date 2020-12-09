@@ -15,7 +15,8 @@ class AuroController implements ContainerInjectableInterface
 
     private $adress = null;
 
-    public function validIP($adress = null) {
+    public function validIP($adress = null)
+    {
         /**
          * A function to validate IP adress from GET request.
          *
@@ -28,7 +29,8 @@ class AuroController implements ContainerInjectableInterface
         }
     }
 
-    public function IPVersion($adress = null) {
+    public function IPVersion($adress = null)
+    {
         /**
          * Returns IP version
          *
@@ -156,5 +158,4 @@ class AuroController implements ContainerInjectableInterface
             }
         } return $result;
     }
-
 }
