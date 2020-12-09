@@ -43,11 +43,6 @@ return [
                         "text" => "IP Validator",
                         "url" => "dev/auro",
                         "title" => "IP validation.",
-                    ],
-                    [
-                        "text" => "GeoIP REM",
-                        "url" => "dev/rem",
-                        "title" => "GeoIP REM server.",
                     ]
                 ]
             ],

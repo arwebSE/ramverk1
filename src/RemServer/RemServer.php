@@ -1,4 +1,5 @@
 <?php
+
 namespace Anax\RemServer;
 
 use Anax\Session\SessionInterface;
@@ -16,6 +17,9 @@ class RemServer
     private $dataset = [];
     protected $session;
     const KEY = "remserver";
+
+
+
     /**
      * Inject dependency to $session.
      *
@@ -28,6 +32,9 @@ class RemServer
         $this->session = $session;
         return $this;
     }
+
+
+
     /**
      * Set the default dataset to use.
      *
@@ -40,6 +47,9 @@ class RemServer
         $this->dataset = $dataset;
         return $this;
     }
+
+
+
     /**
      * Get the default dataset that is used.
      *
@@ -49,6 +59,9 @@ class RemServer
     {
         return $this->dataset;
     }
+
+
+
     /**
      * Fill the session with default data that are read from files.
      *
@@ -67,9 +80,13 @@ class RemServer
             $key = pathinfo($file, PATHINFO_FILENAME);
             $json[$key] = json_decode($content, true);
         }
+
         $this->session->set(self::KEY, $json);
         return $this;
     }
+
+
+
     /**
      * Check if there is a dataset stored.
      *
@@ -79,6 +96,9 @@ class RemServer
     {
         return($this->session->has(self::KEY));
     }
+
+
+
     /**
      * Get (or create) a subset of data.
      *
@@ -94,6 +114,9 @@ class RemServer
             : [];
         return $set;
     }
+
+
+
     /**
      * Save (the modified) dataset.
      *
@@ -109,6 +132,9 @@ class RemServer
         $this->session->set(self::KEY, $data);
         return $this;
     }
+
+
+
     /**
      * Get an item from a dataset.
      *
@@ -120,11 +146,97 @@ class RemServer
     public function getItem($key, $itemId)
     {
         $dataset = $this->getDataset($key);
+
         foreach ($dataset as $item) {
             if ($item["id"] === $itemId) {
                 return $item;
             }
         }
         return null;
+    }
+
+
+
+    /**
+     * Add an item to a dataset.
+     *
+     * @param string $key  for the dataset
+     * @param array  $item to add
+     *
+     * @return array as new item inserted
+     */
+    public function addItem($key, $item)
+    {
+        $dataset = $this->getDataset($key);
+
+        // Get max value for the id
+        $max = 0;
+        foreach ($dataset as $val) {
+            if ($max < $val["id"]) {
+                $max = $val["id"];
+            }
+        }
+        $item["id"] = $max + 1;
+        $dataset[] = $item;
+        $this->saveDataset($key, $dataset);
+        return $item;
+    }
+
+
+
+    /**
+     * Upsert/replace an item to a dataset.
+     *
+     * @param string $keyDataset for the dataset
+     * @param string $itemId     where to store it
+     * @param string $entry      to add
+     *
+     * @return array as item upserted
+     */
+    public function upsertItem($keyDataset, $itemId, $entry)
+    {
+        $dataset = $this->getDataset($keyDataset);
+        $entry["id"] = $itemId;
+
+        // Find the item if it exists
+        $found = false;
+        foreach ($dataset as $key => $val) {
+            if ($itemId === $val["id"]) {
+                $dataset[$key] = $entry;
+                $found = true;
+                break;
+            }
+        }
+
+        if (!$found) {
+            $dataset[] = $entry;
+        }
+
+        $this->saveDataset($keyDataset, $dataset);
+        return $entry;
+    }
+
+
+
+    /**
+     * Delete an item from the dataset.
+     *
+     * @param string $keyDataset for the dataset
+     * @param string $itemId     to delete
+     *
+     * @return void
+     */
+    public function deleteItem($keyDataset, $itemId)
+    {
+        $dataset = $this->getDataset($keyDataset);
+
+        // Find the item if it exists
+        foreach ($dataset as $key => $val) {
+            if ($itemId === $val["id"]) {
+                unset($dataset[$key]);
+                break;
+            }
+        }
+        $this->saveDataset($keyDataset, $dataset);
     }
 }

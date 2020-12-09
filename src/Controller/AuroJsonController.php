@@ -4,6 +4,8 @@ namespace Anax\Controller;
 use Anax\Commons\ContainerInjectableInterface;
 use Anax\Commons\ContainerInjectableTrait;
 
+use Anax\GeoIP\GeoIP;
+
 /**
  * Auro JSON API controller.
  */
@@ -25,6 +27,43 @@ class AuroJsonController implements ContainerInjectableInterface
         }
     }
 
+    public function validIP($adress = null) {
+        /**
+         * A function to validate IP adress from GET request.
+         *
+         * @return boolean as response.
+         */
+        if (filter_var($adress, FILTER_VALIDATE_IP)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function IPVersion($adress = null) {
+        /**
+         * Returns IP version
+         *
+         * @return string as response.
+         */
+        if (filter_var($adress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            return "IPv4";
+        } else {
+            return "IPv6";
+        }
+    }
+
+    public function getGeoByIP($adress = null)
+    {
+        $result = "";
+        if ($adress != null) {
+            if ($this->validIP($adress)) {
+                $geoContainer = new GeoIP();
+                $result = $geoContainer->getInfoByIP($adress);
+            }
+        } return $result;
+    }
+
     /**
      * Index method action
      *
@@ -36,17 +75,20 @@ class AuroJsonController implements ContainerInjectableInterface
         $valid = false;
         $version = null;
         $hostname = null;
+        $maplink = null;
 
         if ($this->adress) {
             $adress = $this->adress;
-            if (filter_var($adress, FILTER_VALIDATE_IP)) {
+            if ($this->validIP($adress)) {
                 $valid = true;
                 $hostname = gethostbyaddr($adress);
-                if (filter_var($adress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-                    $version = "IPv4";
-                } else {
-                    $version = "IPv6";
-                }
+                $version = $this->IPVersion($adress);
+                $geo = $this->getGeoByIP($adress);
+                $lat = $geo["latitude"];
+                $long = $geo["longitude"];
+                $maplink = 'https://www.openstreetmap.org/' .
+                '?mlat=' . $lat . '&mlon=' . $long .
+                '#map=10/' . $lat . '/' . $long;
             }
         }
 
@@ -54,8 +96,15 @@ class AuroJsonController implements ContainerInjectableInterface
             "ip" => $adress,
             "valid" => $valid,
             "version" => $version,
-            "hostname" => $hostname
+            "hostname" => $hostname,
+            "continent" => $geo["continent_name"],
+            "country" => $geo["country_name"],
+            "city" => $geo["city"],
+            "zip" => $geo["zip"],
+            "maplink" => $maplink
         ];
+
+        $json = json_encode($json, JSON_UNESCAPED_UNICODE);
 
         return [$json];
     }

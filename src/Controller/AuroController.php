@@ -4,6 +4,8 @@ namespace Anax\Controller;
 use Anax\Commons\ContainerInjectableInterface;
 use Anax\Commons\ContainerInjectableTrait;
 
+use Anax\GeoIP\GeoIP;
+
 /**
  * A test controller to show off redirect.
  */
@@ -12,6 +14,32 @@ class AuroController implements ContainerInjectableInterface
     use ContainerInjectableTrait;
 
     private $adress = null;
+
+    public function validIP($adress = null) {
+        /**
+         * A function to validate IP adress from GET request.
+         *
+         * @return boolean as response.
+         */
+        if (filter_var($adress, FILTER_VALIDATE_IP)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function IPVersion($adress = null) {
+        /**
+         * Returns IP version
+         *
+         * @return string as response.
+         */
+        if (filter_var($adress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            return "IPv4";
+        } else {
+            return "IPv6";
+        }
+    }
 
     public function validateIP($adress = null)
     {
@@ -27,14 +55,10 @@ class AuroController implements ContainerInjectableInterface
         $hostname = null;
 
         if ($adress != null) {
-            if (filter_var($adress, FILTER_VALIDATE_IP)) {
+            if ($this->validIP($adress)) {
                 $valid = true;
                 $hostname = gethostbyaddr($adress);
-                if (filter_var($adress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-                    $version = "IPv4";
-                } else {
-                    $version = "IPv6";
-                }
+                $version = $this->IPVersion($adress);
             }
             $result = '<span style="color:' . ($valid ? "green" : "darkred") . '"><strong>' . $adress . '</strong> is ' .
                 ($valid ? 'a valid <strong>' . $version . '</strong> adress.</span><br>Hostname: '
@@ -79,10 +103,58 @@ class AuroController implements ContainerInjectableInterface
         $page->add("anax/v2/article/default", $data);
         $page->add("anax/v2/article/default", $resultData, "sidebar-right");
         $page->add("anax/v2/article/default", ["content" => $this->validateIP($this->adress)]);
+        $page->add("anax/v2/article/default", ["content" => $this->getGeoByIP($this->adress)]);
+
 
         return $page->render([
             "title" => "IP Validator",
             "baseTitle" => " | Auro Dev"
         ]);
     }
+
+    public function getGeoByIP($adress = null)
+    {
+        $result = "";
+        if ($adress != null) {
+            if ($this->validIP($adress)) {
+                $geoContainer = new GeoIP();
+                $geoInfo = $geoContainer->getInfoByIP($adress);
+
+                $lat = $geoInfo["latitude"];
+                $long = $geoInfo["longitude"];
+                $bbox1lat = strval(floatval($lat)-1);
+                $bbox1long = strval(floatval($long)-1);
+                $bbox2lat = strval(floatval($lat)+1);
+                $bbox2long = strval(floatval($long)+1);
+
+                $result = '
+                    <h1>GeoIP Info</h1>
+                    <p><strong>Continent:</strong> ' . $geoInfo["continent_name"] . '</p>
+                    <p><strong>Country:</strong> ' . $geoInfo["country_name"] .
+                    ' <img style="max-height:20px;" alt="' .
+                    $geoInfo["country_name"] . " flag" . '" src="' .
+                    $geoInfo["location"]["country_flag"] . '" /></p>
+                    <p><strong>City:</strong> ' . $geoInfo["city"] . '</p>
+                    <p><strong>Zip Code:</strong> ' . $geoInfo["zip"] . '</p>
+                    <iframe
+                        width="425"
+                        height="350"
+                        frameborder="0
+                        scrolling="no"
+                        marginheight="0"
+                        marginwidth="0"
+                        src="https://www.openstreetmap.org/export/embed.html?bbox=' .
+                        $bbox1long . "%2C" .
+                        $bbox1lat . "%2C" .
+                        $bbox2long . "%2C" .
+                        $bbox2lat . '&amp;layer=mapnik&amp;marker=' .
+                        $lat . "%2C" .
+                        $long . '" style="border: 1px solid black">
+                    </iframe>
+                    <br/><small><a href="https://www.openstreetmap.org/#map=9/' . $lat . '/'. $long . '">View Larger Map</a></small>
+                ';
+            }
+        } return $result;
+    }
+
 }

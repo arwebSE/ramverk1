@@ -3,7 +3,7 @@
  * Controller for the REM server.
  */
 return [
-    "mount" => "rem",
+    "mount" => "dev/rem",
     "routes" => [
         [
             "info" => "Get a dataset from the REM server.",
@@ -22,6 +22,18 @@ return [
             "method" => "post",
             "path" => "{dataset:alphanum}",
             "handler" => ["\Anax\RemServer\RemServerController", "postItem"],
+        ],
+        [
+            "info" => "Upsert/replace an item in the REM server.",
+            "method" => "put",
+            "path" => "{dataset:alphanum}/{id:digit}",
+            "handler" => ["\Anax\RemServer\RemServerController", "putItem"],
+        ],
+        [
+            "info" => "Delete an item in the REM server.",
+            "method" => "delete",
+            "path" => "{dataset:alphanum}/{id:digit}",
+            "handler" => ["\Anax\RemServer\RemServerController", "deleteItem"],
         ],
         [
             "info" => "REM server with REST JSON API.",
